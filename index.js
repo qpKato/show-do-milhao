@@ -4,7 +4,7 @@ const perguntas = [
   {
     pergunta: "Qual é a capital do Brasil?",
     alternativas: ["São Paulo", "Brasília", "Rio de Janeiro"],
-    correta: 'b'  
+    correta: 'b'
   },
   {
     pergunta: "Quem pintou a Mona Lisa?",
@@ -89,11 +89,17 @@ function jogar() {
 
   let premioFinal = 0;
   let rodadaAtual = 0;
-
   const letras = ['a', 'b', 'c'];
 
   for (let i = 0; i < 5; i++) {
-    const pergunta = perguntas[Math.floor(Math.random() * perguntas.length)];
+    // Seleciona pergunta aleatória sem repetir
+    let pergunta;
+    do {
+      pergunta = perguntas[Math.floor(Math.random() * perguntas.length)];
+    } while (pergunta.usada);
+
+    pergunta.usada = true;
+
     console.log(` Rodada ${i + 1}`);
     console.log(` Premiação se acertar: R$ ${premiacoes[i].toLocaleString('pt-BR')}`);
     console.log(` Se errar: R$ 0`);
@@ -104,17 +110,16 @@ function jogar() {
       console.log(` ${letras[idx]}) ${alt}`);
     });
 
-    const escolha = readline.question("\nDigite a letra da resposta (a, b, c) ou 0 para PARAR: ").toLowerCase();
+    let escolha = readline.question("\nDigite a letra da resposta (a, b, c) ou 0 para PARAR: ").toLowerCase();
+
+    while (escolha !== '0' && !letras.includes(escolha)) {
+      console.log(" Entrada inválida! Digite apenas 'a', 'b', 'c' ou '0' para parar.");
+      escolha = readline.question("Digite sua resposta: ").toLowerCase();
+    }
 
     if (escolha === '0') {
       console.log("\n Você decidiu parar o jogo.");
       break;
-    }
-
-    if (!letras.includes(escolha)) {
-      console.log(" Entrada inválida! Tente novamente.");
-      i--; 
-      continue;
     }
 
     if (escolha === pergunta.correta) {
@@ -132,16 +137,17 @@ function jogar() {
     console.log("\n----------------------------\n");
   }
 
-  console.log("🎉 FIM DO JOGO 🎉\n");
+  console.log(" FIM DO JOGO \n");
   console.log(` Jogador: ${nome}`);
   console.log(` Rodadas jogadas: ${rodadaAtual} de 5`);
   console.log(` Premiação final: R$ ${premioFinal.toLocaleString('pt-BR')}\n`);
 
   const jogarNovamente = readline.question("Deseja jogar novamente? (s/n): ");
   if (jogarNovamente.toLowerCase() === 's') {
+    perguntas.forEach(p => delete p.usada);
     jogar();
   } else {
-    console.log("\nObrigado por jogar!");
+    console.log("\nObrigado por jogar! ");
   }
 }
 
