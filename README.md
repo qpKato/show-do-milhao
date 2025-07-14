@@ -1,4 +1,4 @@
-#  Show do Milhão - Terminal Edition
+#  Show do Milhão
 
 **Kayo Rodrigues de Sousa**
 
